@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+*.egg
+
+# Virtual environment
+.venv/
+
+# IDE
+.idea/
+.vscode/
+.cursor/
+
+# Environment / secrets
+.env
+
+# OS
+.DS_Store
+
+# Data files (too large for git)
+*.xlsm
+*.xlsx
+*.csv
+
+# Cache
+.ruff_cache/
+cache/
+
+# VS Code extensions
+*.vsix
