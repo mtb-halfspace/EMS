@@ -3,24 +3,6 @@ import numpy as np
 import datetime as dt
 from typing import Literal, Optional
 from statsmodels.tsa.seasonal import STL
-from constants import project_root
-
-CACHE_DIR = project_root / "cache"
-
-
-def save_cache(df: pd.DataFrame, name: str) -> None:
-    """Save a DataFrame to the cache directory as parquet."""
-    CACHE_DIR.mkdir(exist_ok=True)
-    df.to_parquet(CACHE_DIR / f"{name}.parquet")
-
-
-def load_cache(name: str) -> pd.DataFrame | None:
-    """Load a cached parquet file, returning None if it doesn't exist."""
-    path = CACHE_DIR / f"{name}.parquet"
-    if path.exists():
-        return pd.read_parquet(path)
-    return None
-
 
 def make_time_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Create additional time-related columns from the 'Time' column."""

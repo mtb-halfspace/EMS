@@ -1,5 +1,5 @@
 from load_dataset import load_dataset
-from helpers import build_store_features, load_cache, save_cache
+from helpers import build_store_features
 
 import numpy as np
 import pandas as pd
@@ -8,13 +8,8 @@ from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-features = load_cache("store_segmentation_features")
-if features is not None:
-    a_categories = [c.removeprefix("cat_share_") for c in features.columns if c.startswith("cat_share_")]
-else:
-    df = load_dataset()
-    features, a_categories = build_store_features(df)
-    save_cache(features, "store_segmentation_features")
+df = load_dataset()
+features, a_categories = build_store_features(df)
 
 feature_names = features.columns.tolist()
 store_labels = features.index.astype(str).tolist()

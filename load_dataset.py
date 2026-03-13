@@ -4,24 +4,13 @@ from constants import (
     filtered_retail_products_list,
     data_files,
 )
-from helpers import make_time_columns, make_date_columns, make_transaction_columns, load_cache, save_cache
+from helpers import make_time_columns, make_date_columns, make_transaction_columns
 
 
 def load_dataset(
     filter_retail_products: bool = True,
-    use_cache: bool = True,
 ) -> pd.DataFrame:
-    """Load the dataset from multiple Emmerys Excel files and combine them.
-
-    When *use_cache* is True (default), a previously saved parquet copy is
-    returned immediately, skipping the slow Excel read.  Pass
-    ``use_cache=False`` to force a fresh load from the source files.
-    """
-    if use_cache:
-        cached = load_cache("dataset")
-        if cached is not None:
-            return cached
-
+    """Load the dataset from multiple Emmerys Excel files and combine them."""
     cols_transactions = [
         "Transaction No.",
         "Item No.",
@@ -102,5 +91,4 @@ def load_dataset(
     if filter_retail_products:
         df = df[~df["Retail Product Name"].isin(filtered_retail_products_list)]
 
-    save_cache(df, "dataset")
     return df

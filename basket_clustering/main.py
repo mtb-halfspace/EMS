@@ -1,6 +1,5 @@
 import numpy as np
 from load_dataset import load_dataset
-from helpers import load_cache, save_cache
 from basket_clustering.pipeline import (
     build_feature_matrix,
     fit_archetypes,
@@ -24,17 +23,11 @@ archetype_height = 0.9
 cluster_height = 0.3
 
 # ── Load data & build features ───────────────────────────────────────────────
-sample_df = load_cache("basket_clustering_sample")
-if sample_df is not None:
-    scalar_cols = ["n_items", "total_spend", "hour_of_day", "day_of_week"]
-    category_cols = [c for c in sample_df.columns if c not in scalar_cols]
-else:
-    df = load_dataset()
-    txn_features, category_cols, scalar_cols = build_feature_matrix(df, analysis_level, txn_key)
-    rng = np.random.default_rng(42)
-    sample_idx = rng.choice(len(txn_features), size=min(sample_size, len(txn_features)), replace=False)
-    sample_df = txn_features.iloc[sample_idx].copy()
-    save_cache(sample_df, "basket_clustering_sample")
+df = load_dataset()
+txn_features, category_cols, scalar_cols = build_feature_matrix(df, analysis_level, txn_key)
+rng = np.random.default_rng(42)
+sample_idx = rng.choice(len(txn_features), size=min(sample_size, len(txn_features)), replace=False)
+sample_df = txn_features.iloc[sample_idx].copy()
 
 feature_cols = category_cols + scalar_cols
 

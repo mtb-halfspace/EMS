@@ -1,5 +1,5 @@
 from load_dataset import load_dataset
-from helpers import abc_classify, load_cache, save_cache
+from helpers import abc_classify
 
 import pandas as pd
 import seaborn as sns
@@ -11,11 +11,8 @@ ABC_PALETTE = {"A": "#2ecc71", "B": "#f39c12", "C": "#e74c3c"}
 
 analysis_level = "Retail Product Name"
 
-revenue = load_cache("abc_analysis_revenue")
-if revenue is None:
-    df = load_dataset()
-    revenue = abc_classify(df, group_col=analysis_level, value_col="Paid Net Amount", threshold_a=THRESHOLD_A, threshold_b=THRESHOLD_B)
-    save_cache(revenue, "abc_analysis_revenue")
+df = load_dataset()
+revenue = abc_classify(df, group_col=analysis_level, value_col="Paid Net Amount", threshold_a=THRESHOLD_A, threshold_b=THRESHOLD_B)
 
 # --- Figure 1: Pareto chart ---
 
@@ -80,32 +77,6 @@ ax.set_xlabel("ABC Class")
 ax.set_ylabel("% of product portfolio")
 ax.set_title("Share of Product Portfolio per ABC Class")
 ax.set_ylim(0, summary["PortfolioShare"].max() * 1.15)
-
-plt.tight_layout()
-plt.show()
-
-# --- Figure 3: Revenue share per A-class product ---
-
-a_products = revenue.loc[revenue["ABC"] == "A"].copy()
-total_revenue = revenue["Revenue"].sum()
-a_products["RevenueShare"] = a_products["Revenue"] / total_revenue * 100
-
-a_products = a_products.sort_values("RevenueShare", ascending=True)
-
-fig3, ax = plt.subplots(figsize=(8, max(4, len(a_products) * 0.45)))
-bars = ax.barh(
-    a_products[analysis_level],
-    a_products["RevenueShare"],
-    color=ABC_PALETTE["A"],
-    edgecolor="white",
-    linewidth=0.3,
-)
-ax.bar_label(bars, fmt="%.1f%%", fontsize=9, padding=3)
-
-ax.set_xlabel("Revenue share (%)")
-ax.set_title("Revenue Share per A-Class Product")
-ax.set_xlim(0, a_products["RevenueShare"].max() * 1.15)
-ax.tick_params(axis="y", labelsize=9)
 
 plt.tight_layout()
 plt.show()
